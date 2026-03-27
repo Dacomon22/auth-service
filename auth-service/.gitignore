@@ -1,0 +1,46 @@
+# ======================
+# GENERAL
+# ======================
+.DS_Store
+Thumbs.db
+
+# ======================
+# NODE / ANGULAR
+# ======================
+node_modules/
+dist/
+.angular/
+coverage/
+npm-debug.log
+yarn-error.log
+
+# ======================
+# JAVA / SPRING BOOT
+# ======================
+target/
+*.log
+*.class
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# ======================
+# IDEs
+# ======================
+# IntelliJ
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# ======================
+# ENV FILES
+# ======================
+.env
+.env.*
+
+# ======================
+# OS
+# ======================
+*.swp
