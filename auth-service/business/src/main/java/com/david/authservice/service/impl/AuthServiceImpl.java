@@ -4,13 +4,11 @@ import com.david.authservice.exception.InvalidCredentialsException;
 import com.david.authservice.model.AuthResponse;
 import com.david.authservice.model.LoginRequestDTO;
 import com.david.authservice.model.UserDTO;
-import com.david.authservice.repository.AuthRepository;
+import com.david.authservice.persistence.AuthRepository;
 import com.david.authservice.service.AuthService;
 import com.david.authservice.service.TokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Optional;
 
 @AllArgsConstructor
 public class AuthServiceImpl implements AuthService {

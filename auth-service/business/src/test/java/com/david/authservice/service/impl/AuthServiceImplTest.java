@@ -4,7 +4,7 @@ import com.david.authservice.exception.InvalidCredentialsException;
 import com.david.authservice.model.AuthResponse;
 import com.david.authservice.model.LoginRequestDTO;
 import com.david.authservice.model.UserDTO;
-import com.david.authservice.repository.AuthRepository;
+import com.david.authservice.persistence.AuthRepository;
 import com.david.authservice.service.TokenService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

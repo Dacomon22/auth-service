@@ -1,4 +1,4 @@
-package com.david.authservice.repository;
+package com.david.authservice.persistence;
 
 import com.david.authservice.model.UserDTO;
 
