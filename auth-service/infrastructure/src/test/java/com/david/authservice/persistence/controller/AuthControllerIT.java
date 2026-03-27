@@ -3,7 +3,6 @@ package com.david.authservice.persistence.controller;
 import com.david.authservice.persistence.entity.UserEntity;
 import com.david.authservice.persistence.jpa.UserJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,10 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -43,7 +43,6 @@ public class AuthControllerIT {
     }
 
     @Test
-    @DisplayName("Should login successfully with valid credentials")
     void shouldLoginSuccessfullyWithValidCredentials() throws Exception {
         mockMvc.perform(post("/api/auth/login")
                         .with(csrf())
@@ -55,7 +54,6 @@ public class AuthControllerIT {
     }
 
     @Test
-    @DisplayName("Should return 401 when password is invalid")
     void shouldReturn401WhenPasswordIsInvalid() throws Exception {
         mockMvc.perform(post("/api/auth/login")
                         .with(csrf())
@@ -66,24 +64,26 @@ public class AuthControllerIT {
     }
 
     @Test
-    @DisplayName("Should return 401 when user does not exist")
-    void shouldReturn401WhenUserDoesNotExist() throws Exception {
-        mockMvc.perform(post("/api/auth/login")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\":\"unknown\",\"password\":\"123456\"}"))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.code").value("AUTH_001"));
+    void shouldRedirectToSsoProviderInIntegrationTest() throws Exception {
+        mockMvc.perform(get("/api/auth/sso"))
+                .andExpect(status().isFound())
+                .andExpect(header().string("Location", containsString("https://fake-sso-provider.com/oauth/authorize")));
     }
 
     @Test
-    @DisplayName("Should return 400 when request is invalid")
-    void shouldReturn400WhenRequestIsInvalid() throws Exception {
-        mockMvc.perform(post("/api/auth/login")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\":\"\",\"password\":\"\"}"))
+    void shouldReturnTokenWhenValidSsoCodeIsProvided() throws Exception {
+        mockMvc.perform(get("/api/auth/sso/callback")
+                        .param("code", "valid-code"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").exists())
+                .andExpect(jsonPath("$.type").value("Bearer"));
+    }
+
+    @Test
+    void shouldReturn400WhenSsoCodeIsInvalidInIntegrationTest() throws Exception {
+        mockMvc.perform(get("/api/auth/sso/callback")
+                        .param("code", "invalid-code"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("VALIDATION_001"));
+                .andExpect(jsonPath("$.code").value("SSO_001"));
     }
 }

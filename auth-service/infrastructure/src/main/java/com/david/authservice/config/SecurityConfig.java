@@ -16,7 +16,10 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/auth/login", "/h2-console/**").permitAll()
+                .antMatchers("/api/auth/login",
+                        "/api/auth/sso",
+                        "/api/auth/sso/callback",
+                        "/h2-console/**").permitAll()
                 .anyRequest().authenticated();
 
         http.headers().frameOptions().disable();
