@@ -1,7 +1,9 @@
 package com.david.authservice.persistence.controller;
 
+import com.david.authservice.config.SsoProperties;
 import com.david.authservice.controller.AuthController;
 import com.david.authservice.exception.GlobalExceptionHandler;
+import com.david.authservice.exception.SsoValidationException;
 import com.david.authservice.model.AuthResponse;
 import com.david.authservice.model.LoginRequestDTO;
 import com.david.authservice.service.AuthService;
@@ -40,6 +42,9 @@ public class AuthControllerTest {
     @MockBean
     private TokenService tokenService;
 
+    @MockBean
+    private SsoProperties ssoProperties;
+
     @Test
     void shouldReturn200AndTokenWhenLoginIsSuccessful() throws Exception {
         LoginRequestDTO request = new LoginRequestDTO();
@@ -72,14 +77,22 @@ public class AuthControllerTest {
 
     @Test
     void shouldRedirectToSsoProvider() throws Exception {
+        when(ssoProperties.getAuthorizeUrl()).thenReturn("https://fake-sso-provider.com/oauth/authorize");
+        when(ssoProperties.getClientId()).thenReturn("auth-service-client");
+        when(ssoProperties.getRedirectUri()).thenReturn("http://localhost:4200/sso/callback");
+
         mockMvc.perform(get("/api/auth/sso"))
                 .andExpect(status().isFound())
-                .andExpect(header().string("Location", containsString("https://fake-sso-provider.com/oauth/authorize")));
+                .andExpect(header().string("Location", containsString("https://fake-sso-provider.com/oauth/authorize")))
+                .andExpect(header().string("Location", containsString("client_id=auth-service-client")))
+                .andExpect(header().string("Location", containsString("redirect_uri=http://localhost:4200/sso/callback")));
     }
 
     @Test
     void shouldReturnTokenWhenSsoCodeIsValid() throws Exception {
-        when(tokenService.generateToken("sso-user")).thenReturn("jwt-token");
+        when(ssoProperties.getMockUser()).thenReturn("sso-user@mail.com");
+        when(authService.callback("valid-code", "sso-user@mail.com"))
+                .thenReturn(new AuthResponse("jwt-token"));
 
         mockMvc.perform(get("/api/auth/sso/callback")
                         .param("code", "valid-code"))
@@ -90,6 +103,10 @@ public class AuthControllerTest {
 
     @Test
     void shouldReturn400WhenSsoCodeIsMissing() throws Exception {
+        when(ssoProperties.getMockUser()).thenReturn("sso-user@mail.com");
+        when(authService.callback(null, "sso-user@mail.com"))
+                .thenThrow(new SsoValidationException("Missing authorization code"));
+
         mockMvc.perform(get("/api/auth/sso/callback"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("SSO_001"))
@@ -98,6 +115,10 @@ public class AuthControllerTest {
 
     @Test
     void shouldReturn400WhenSsoCodeIsInvalid() throws Exception {
+        when(ssoProperties.getMockUser()).thenReturn("sso-user@mail.com");
+        when(authService.callback("wrong-code", "sso-user@mail.com"))
+                .thenThrow(new SsoValidationException("Invalid authorization code"));
+
         mockMvc.perform(get("/api/auth/sso/callback")
                         .param("code", "wrong-code"))
                 .andExpect(status().isBadRequest())

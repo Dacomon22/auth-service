@@ -1,6 +1,7 @@
 package com.david.authservice.service.impl;
 
 import com.david.authservice.exception.InvalidCredentialsException;
+import com.david.authservice.exception.SsoValidationException;
 import com.david.authservice.model.AuthResponse;
 import com.david.authservice.model.LoginRequestDTO;
 import com.david.authservice.model.UserDTO;
@@ -43,5 +44,23 @@ public class AuthServiceImpl implements AuthService {
 
         return new AuthResponse(token);
     }
+
+
+    @Override
+    public AuthResponse callback(String code,String username) {
+
+            if (code == null || code.trim().isEmpty()) {
+                throw new SsoValidationException("Missing authorization code");
+            }
+
+            if (!"valid-code".equals(code)) {
+                throw new SsoValidationException("Invalid authorization code");
+            }
+
+            String token = tokenService.generateToken(username);
+
+            return new AuthResponse(token);
+        }
+
 
 }

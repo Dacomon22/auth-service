@@ -1,4 +1,5 @@
-<div class="login-container">
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-container">
+
   <div class="login-left">
     <img src="assets/images/login.svg" alt="illustration">
   </div>
@@ -10,18 +11,42 @@
       <p class="title">Inicia sesión en tu cuenta</p>
 
       <mat-form-field appearance="outline" class="full-width">
-        <input matInput placeholder="Correo electrónico" type="email">
+        <input
+          matInput
+          placeholder="Correo electrónico"
+          type="email"
+          formControlName="email">
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
-        <input matInput placeholder="Contraseña" [type]="hide ? 'password' : 'text'">
+        <input
+          matInput
+          placeholder="Contraseña"
+          [type]="hide ? 'password' : 'text'"
+          formControlName="password">
       </mat-form-field>
 
-      <button mat-raised-button class="login-btn">ENTRAR</button>
+      <button
+        mat-raised-button
+        class="login-btn"
+        type="submit"
+        [disabled]="isLoading">
+        {{ isLoading ? 'CARGANDO...' : 'ENTRAR' }}
+      </button>
+
+      <p *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </p>
 
       <p class="divider">Otras formas de acceso:</p>
 
-      <button mat-stroked-button class="sso-btn">ENTRAR CON SSO</button>
+      <button
+        mat-stroked-button
+        class="sso-btn"
+        type="button"
+        (click)="loginWithSso()">
+        ENTRAR CON SSO
+      </button>
 
       <p class="register">¿No tienes cuenta? <span>Regístrate</span></p>
     </div>
@@ -37,4 +62,5 @@
       </div>
     </div>
   </div>
-</div>
+
+</form> 

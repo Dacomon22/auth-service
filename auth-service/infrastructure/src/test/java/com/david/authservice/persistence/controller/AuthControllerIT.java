@@ -1,5 +1,6 @@
 package com.david.authservice.persistence.controller;
 
+import com.david.authservice.config.SsoProperties;
 import com.david.authservice.persistence.entity.UserEntity;
 import com.david.authservice.persistence.jpa.UserJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,9 @@ public class AuthControllerIT {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private SsoProperties ssoProperties;
 
     @BeforeEach
     void setUp() {
@@ -67,7 +71,9 @@ public class AuthControllerIT {
     void shouldRedirectToSsoProviderInIntegrationTest() throws Exception {
         mockMvc.perform(get("/api/auth/sso"))
                 .andExpect(status().isFound())
-                .andExpect(header().string("Location", containsString("https://fake-sso-provider.com/oauth/authorize")));
+                .andExpect(header().string("Location", containsString("https://fake-sso-provider.com/oauth/authorize")))
+                .andExpect(header().string("Location", containsString("client_id=auth-service-client")))
+                .andExpect(header().string("Location", containsString("redirect_uri=http://localhost:4200/sso/callback")));
     }
 
     @Test

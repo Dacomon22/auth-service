@@ -1,11 +1,13 @@
 package com.david.authservice.service.impl;
 
 import com.david.authservice.exception.InvalidCredentialsException;
+import com.david.authservice.exception.SsoValidationException;
 import com.david.authservice.model.AuthResponse;
 import com.david.authservice.model.LoginRequestDTO;
 import com.david.authservice.model.UserDTO;
 import com.david.authservice.persistence.AuthRepository;
 import com.david.authservice.service.TokenService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -108,6 +110,78 @@ public class AuthServiceImplTest {
         verify(authRepository).findByEmail("david@test.com");
         verify(passwordEncoder).matches("wrongPassword", "encodedPassword");
         verify(tokenService, never()).generateToken(org.mockito.ArgumentMatchers.anyString());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when SSO code is null")
+    void shouldThrowExceptionWhenSsoCodeIsNull() {
+        // Given
+        String code = null;
+        String username = "sso-user@mail.com";
+
+        // When / Then
+        SsoValidationException exception = assertThrows(
+                SsoValidationException.class,
+                () -> authService.callback(code, username)
+        );
+
+        assertEquals("Missing authorization code", exception.getMessage());
+        verifyNoInteractions(tokenService);
+    }
+
+    @Test
+    @DisplayName("Should throw exception when SSO code is empty")
+    void shouldThrowExceptionWhenSsoCodeIsEmpty() {
+        // Given
+        String code = "   ";
+        String username = "sso-user@mail.com";
+
+        // When / Then
+        SsoValidationException exception = assertThrows(
+                SsoValidationException.class,
+                () -> authService.callback(code, username)
+        );
+
+        assertEquals("Missing authorization code", exception.getMessage());
+        verifyNoInteractions(tokenService);
+    }
+
+    @Test
+    @DisplayName("Should throw exception when SSO code is invalid")
+    void shouldThrowExceptionWhenSsoCodeIsInvalid() {
+        // Given
+        String code = "wrong-code";
+        String username = "sso-user@mail.com";
+
+        // When / Then
+        SsoValidationException exception = assertThrows(
+                SsoValidationException.class,
+                () -> authService.callback(code, username)
+        );
+
+        assertEquals("Invalid authorization code", exception.getMessage());
+        verifyNoInteractions(tokenService);
+    }
+
+    @Test
+    @DisplayName("Should return token when SSO code is valid")
+    void shouldReturnTokenWhenSsoCodeIsValid() {
+        // Given
+        String code = "valid-code";
+        String username = "sso-user@mail.com";
+
+        when(tokenService.generateToken(username)).thenReturn("jwt-token");
+
+        // When
+        AuthResponse response = authService.callback(code, username);
+
+        // Then
+        assertNotNull(response);
+        assertEquals("jwt-token", response.getToken());
+        assertEquals("Bearer", response.getType());
+
+        verify(tokenService, times(1)).generateToken(username);
+        verifyNoMoreInteractions(tokenService);
     }
 
 }

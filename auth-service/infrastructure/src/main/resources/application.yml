@@ -27,3 +27,10 @@ security:
   jwt:
     secret: mySecretKeyabcd123456789mySecretKey123456789zxyw
     expiration-ms: 3600000
+
+sso:
+  client-id: auth-service-client
+  redirect-uri: http://localhost:4200/sso/callback
+  authorizeUrl: https://fake-sso-provider.com/oauth/authorize
+  valid-code: valid-code
+  mock-user: sso-user

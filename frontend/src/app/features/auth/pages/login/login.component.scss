@@ -184,4 +184,18 @@
     width: 100%;
     max-width: 360px;
   }
+
+  .success-message {
+  margin-top: 12px;
+  color: #2e7d32;
+  font-size: 13px;
+  text-align: center;
+}
+
+.error-message {
+  margin-top: 12px;
+  color: #d32f2f;
+  font-size: 13px;
+  text-align: center;
+}
 }
