@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Data
@@ -11,8 +12,9 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class LoginRequestDTO {
 
-    @NotBlank
-    private String username;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email format is invalid")
+    private String email;
 
     @NotBlank
     private String password;

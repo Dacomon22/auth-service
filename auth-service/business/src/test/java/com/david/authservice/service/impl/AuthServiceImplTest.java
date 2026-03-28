@@ -37,16 +37,16 @@ public class AuthServiceImplTest {
     void shouldReturnTokenWhenCredentialsAreValid() {
         // Given
         LoginRequestDTO request = new LoginRequestDTO();
-        request.setUsername("david");
+        request.setEmail("david@test.com");
         request.setPassword("plainPassword");
 
         UserDTO user = new UserDTO();
-        user.setUsername("david");
+        user.setEmail("david@test.com");
         user.setPassword("encodedPassword");
 
-        when(authRepository.findByUsername("david")).thenReturn(Optional.of(user));
+        when(authRepository.findByEmail("david@test.com")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("plainPassword", "encodedPassword")).thenReturn(true);
-        when(tokenService.generateToken("david")).thenReturn("jwt-token");
+        when(tokenService.generateToken("david@test.com")).thenReturn("jwt-token");
 
         // When
         AuthResponse response = authService.login(request);
@@ -56,19 +56,19 @@ public class AuthServiceImplTest {
         assertEquals("jwt-token", response.getToken());
         assertEquals("Bearer", response.getType());
 
-        verify(authRepository).findByUsername("david");
+        verify(authRepository).findByEmail("david@test.com");
         verify(passwordEncoder).matches("plainPassword", "encodedPassword");
-        verify(tokenService).generateToken("david");
+        verify(tokenService).generateToken("david@test.com");
     }
 
     @Test
     void shouldThrowExceptionWhenUserDoesNotExist() {
         // Given
         LoginRequestDTO request = new LoginRequestDTO();
-        request.setUsername("david");
+        request.setEmail("david@test.com");
         request.setPassword("plainPassword");
 
-        when(authRepository.findByUsername("david")).thenReturn(Optional.empty());
+        when(authRepository.findByEmail("david@test.com")).thenReturn(Optional.empty());
 
         // When
         InvalidCredentialsException exception = assertThrows(
@@ -78,7 +78,7 @@ public class AuthServiceImplTest {
 
         // Then
         assertEquals("Invalid credentials", exception.getMessage());
-        verify(authRepository).findByUsername("david");
+        verify(authRepository).findByEmail("david@test.com");
         verify(passwordEncoder, never()).matches(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyString());
         verify(tokenService, never()).generateToken(org.mockito.ArgumentMatchers.anyString());
     }
@@ -87,14 +87,14 @@ public class AuthServiceImplTest {
     void shouldThrowExceptionWhenPasswordIsInvalid() {
         // Given
         LoginRequestDTO request = new LoginRequestDTO();
-        request.setUsername("david");
+        request.setEmail("david@test.com");
         request.setPassword("wrongPassword");
 
         UserDTO user = new UserDTO();
-        user.setUsername("david");
+        user.setEmail("david@test.com");
         user.setPassword("encodedPassword");
 
-        when(authRepository.findByUsername("david")).thenReturn(Optional.of(user));
+        when(authRepository.findByEmail("david@test.com")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("wrongPassword", "encodedPassword")).thenReturn(false);
 
         // When
@@ -105,7 +105,7 @@ public class AuthServiceImplTest {
 
         // Then
         assertEquals("Invalid credentials", exception.getMessage());
-        verify(authRepository).findByUsername("david");
+        verify(authRepository).findByEmail("david@test.com");
         verify(passwordEncoder).matches("wrongPassword", "encodedPassword");
         verify(tokenService, never()).generateToken(org.mockito.ArgumentMatchers.anyString());
     }

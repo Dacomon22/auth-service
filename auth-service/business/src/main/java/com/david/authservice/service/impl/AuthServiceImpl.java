@@ -25,21 +25,21 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse login(LoginRequestDTO request) {
 
-        log.info("Starting authentication process for username: {}", request.getUsername());
+        log.info("Starting authentication process for username: {}", request.getEmail());
 
-        UserDTO user = authRepository.findByUsername(request.getUsername())
+        UserDTO user = authRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            log.warn("Authentication failed: invalid password for user -> {}", request.getUsername());
+            log.warn("Authentication failed: invalid password for user -> {}", request.getEmail());
             throw new InvalidCredentialsException("Invalid credentials");
         }
 
-        log.info("Password validated successfully for user: {}", request.getUsername());
+        log.info("Password validated successfully for user: {}", request.getEmail());
 
-        String token = tokenService.generateToken(user.getUsername());
+        String token = tokenService.generateToken(user.getEmail());
 
-        log.info("JWT token generated successfully for user: {}", request.getUsername());
+        log.info("JWT token generated successfully for user: {}", request.getEmail());
 
         return new AuthResponse(token);
     }

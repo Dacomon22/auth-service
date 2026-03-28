@@ -37,7 +37,7 @@ public class AuthControllerIT {
         userJpaRepository.deleteAll();
 
         UserEntity user = new UserEntity();
-        user.setUsername("david");
+        user.setEmail("david@test.com");
         user.setPassword(passwordEncoder.encode("123456"));
         userJpaRepository.save(user);
     }
@@ -47,7 +47,7 @@ public class AuthControllerIT {
         mockMvc.perform(post("/api/auth/login")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\":\"david\",\"password\":\"123456\"}"))
+                        .content("{\"email\":\"david@test.com\",\"password\":\"123456\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists())
                 .andExpect(jsonPath("$.type").value("Bearer"));
@@ -58,7 +58,7 @@ public class AuthControllerIT {
         mockMvc.perform(post("/api/auth/login")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\":\"david\",\"password\":\"wrong-password\"}"))
+                        .content("{\"email\":\"david@test.com\",\"password\":\"wrong-password\"}"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value("AUTH_001"));
     }

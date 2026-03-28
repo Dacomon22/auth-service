@@ -16,14 +16,14 @@ public class AuthRepositoryAdapter implements AuthRepository {
     private final UserJpaRepository userJpaRepository;
 
     @Override
-    public Optional<UserDTO> findByUsername(String username) {
-        return userJpaRepository.findByUsername(username)
+    public Optional<UserDTO> findByEmail(String email) {
+        return userJpaRepository.findByEmail(email)
                 .map(this::toDto);
     }
 
     private UserDTO toDto(UserEntity entity) {
         return new UserDTO(
-                entity.getUsername(),
+                entity.getEmail(),
                 entity.getPassword(),
                 entity.getId()
         );

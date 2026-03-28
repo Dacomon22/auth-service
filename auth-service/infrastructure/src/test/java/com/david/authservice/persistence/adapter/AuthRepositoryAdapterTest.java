@@ -28,28 +28,28 @@ public class AuthRepositoryAdapterTest {
         // Given
         UserEntity entity = new UserEntity();
         entity.setId(1L);
-        entity.setUsername("david");
+        entity.setEmail("david@test.com");
         entity.setPassword("encodedPassword");
 
-        when(userJpaRepository.findByUsername("david")).thenReturn(Optional.of(entity));
+        when(userJpaRepository.findByEmail("david@test.com")).thenReturn(Optional.of(entity));
 
         // When
-        Optional<UserDTO> result = authRepositoryAdapter.findByUsername("david");
+        Optional<UserDTO> result = authRepositoryAdapter.findByEmail("david@test.com");
 
         // Then
         assertTrue(result.isPresent());
         assertEquals(1L, result.get().getId());
-        assertEquals("david", result.get().getUsername());
+        assertEquals("david@test.com", result.get().getEmail());
         assertEquals("encodedPassword", result.get().getPassword());
     }
 
     @Test
     void shouldReturnEmptyWhenUserDoesNotExist() {
         // Given
-        when(userJpaRepository.findByUsername("david")).thenReturn(Optional.empty());
+        when(userJpaRepository.findByEmail("david@test.com")).thenReturn(Optional.empty());
 
         // When
-        Optional<UserDTO> result = authRepositoryAdapter.findByUsername("david");
+        Optional<UserDTO> result = authRepositoryAdapter.findByEmail("david@test.com");
 
         // Then
         assertFalse(result.isPresent());

@@ -28,16 +28,16 @@ public class AuthRepositoryAdapterIT {
     void shouldReturnUserDtoWhenUserExistsInDatabase() {
         // Given
         UserEntity user = new UserEntity();
-        user.setUsername("david");
+        user.setEmail("david@test.com");
         user.setPassword("encodedPassword");
         userJpaRepository.save(user);
 
         // When
-        Optional<UserDTO> result = authRepositoryAdapter.findByUsername("david");
+        Optional<UserDTO> result = authRepositoryAdapter.findByEmail("david@test.com");
 
         // Then
         assertTrue(result.isPresent());
-        assertEquals("david", result.get().getUsername());
+        assertEquals("david@test.com", result.get().getEmail());
         assertEquals("encodedPassword", result.get().getPassword());
     }
 
@@ -45,7 +45,7 @@ public class AuthRepositoryAdapterIT {
     @DisplayName("Should return empty when user does not exist in database")
     void shouldReturnEmptyWhenUserDoesNotExistInDatabase() {
         // When
-        Optional<UserDTO> result = authRepositoryAdapter.findByUsername("unknown");
+        Optional<UserDTO> result = authRepositoryAdapter.findByEmail("unknown");
 
         // Then
         assertFalse(result.isPresent());

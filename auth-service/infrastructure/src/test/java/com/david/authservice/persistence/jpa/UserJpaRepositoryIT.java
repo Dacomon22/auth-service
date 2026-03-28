@@ -23,17 +23,17 @@ public class UserJpaRepositoryIT {
     void shouldFindUserByUsername() {
         // Given
         UserEntity user = new UserEntity();
-        user.setUsername("david");
+        user.setEmail("david@test.com");
         user.setPassword("encodedPassword");
 
         userJpaRepository.save(user);
 
         // When
-        Optional<UserEntity> result = userJpaRepository.findByUsername("david");
+        Optional<UserEntity> result = userJpaRepository.findByEmail("david@test.com");
 
         // Then
         assertTrue(result.isPresent());
-        assertEquals("david", result.get().getUsername());
+        assertEquals("david@test.com", result.get().getEmail());
         assertEquals("encodedPassword", result.get().getPassword());
     }
 
@@ -41,7 +41,7 @@ public class UserJpaRepositoryIT {
     @DisplayName("Should return empty when username does not exist")
     void shouldReturnEmptyWhenUsernameDoesNotExist() {
         // When
-        Optional<UserEntity> result = userJpaRepository.findByUsername("unknown");
+        Optional<UserEntity> result = userJpaRepository.findByEmail("unknown");
 
         // Then
         assertFalse(result.isPresent());

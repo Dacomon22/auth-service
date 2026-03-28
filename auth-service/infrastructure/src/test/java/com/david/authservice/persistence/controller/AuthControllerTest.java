@@ -43,7 +43,7 @@ public class AuthControllerTest {
     @Test
     void shouldReturn200AndTokenWhenLoginIsSuccessful() throws Exception {
         LoginRequestDTO request = new LoginRequestDTO();
-        request.setUsername("david");
+        request.setEmail("david@test.com");
         request.setPassword("123456");
 
         when(authService.login(any()))
@@ -60,7 +60,7 @@ public class AuthControllerTest {
     @Test
     void shouldReturn400WhenUsernameIsBlank() throws Exception {
         LoginRequestDTO request = new LoginRequestDTO();
-        request.setUsername("");
+        request.setEmail("");
         request.setPassword("123456");
 
         mockMvc.perform(post("/api/auth/login")

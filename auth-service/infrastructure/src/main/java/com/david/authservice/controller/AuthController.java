@@ -25,10 +25,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequestDTO request) {
 
-        log.info("Login request received for username: {}", request.getUsername());
+        log.info("Login request received for username: {}", request.getEmail());
         AuthResponse response = authService.login(request);
 
-        log.info("Login request processed successfully for username: {}", request.getUsername());
+        log.info("Login request processed successfully for username: {}", request.getEmail());
         return ResponseEntity.ok(response);
     }
 

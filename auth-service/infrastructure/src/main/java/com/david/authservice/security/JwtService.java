@@ -21,14 +21,14 @@ public class JwtService implements TokenService {
     private long expirationMs;
 
     @Override
-    public String generateToken(String username) {
+    public String generateToken(String email) {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + expirationMs);
 
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
                 .signWith(key, SignatureAlgorithm.HS256)

@@ -25,7 +25,7 @@ public class JwtServiceTest {
         ReflectionTestUtils.setField(jwtService, "secret", secret);
         ReflectionTestUtils.setField(jwtService, "expirationMs", 3600000L);
 
-        String token = jwtService.generateToken("david");
+        String token = jwtService.generateToken("david@test.com");
 
         assertNotNull(token);
         assertFalse(token.isEmpty());
@@ -38,7 +38,7 @@ public class JwtServiceTest {
                 .parseClaimsJws(token)
                 .getBody();
 
-        assertEquals("david", claims.getSubject());
+        assertEquals("david@test.com", claims.getSubject());
         assertNotNull(claims.getIssuedAt());
         assertNotNull(claims.getExpiration());
     }
