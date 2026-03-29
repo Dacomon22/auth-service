@@ -1,6 +1,5 @@
 package com.david.authservice.persistence.controller;
 
-import com.david.authservice.config.SsoProperties;
 import com.david.authservice.persistence.entity.UserEntity;
 import com.david.authservice.persistence.jpa.UserJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -33,9 +31,6 @@ public class AuthControllerIT {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private SsoProperties ssoProperties;
 
     @BeforeEach
     void setUp() {
