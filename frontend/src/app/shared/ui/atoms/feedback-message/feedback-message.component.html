@@ -1,0 +1,8 @@
+<p
+  class="feedback-message"
+  [ngClass]="{
+    'feedback-message--success': type === 'success',
+    'feedback-message--error': type === 'error'
+  }">
+  {{ message }}
+</p>

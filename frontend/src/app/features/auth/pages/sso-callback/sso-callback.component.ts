@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
-import { ErrorResponse } from '../../../../core/models/error-respones.model';
+import { ErrorResponse } from '../../../../core/models/error-response.model';
 
 @Component({
   selector: 'app-sso-callback',
@@ -12,11 +12,12 @@ import { ErrorResponse } from '../../../../core/models/error-respones.model';
   styleUrls: ['./sso-callback.component.scss']
 })
 export class SsoCallbackComponent implements OnInit {
+  successMessage = '';
   errorMessage = '';
+  isLoading = true;
 
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly router: Router,
     private readonly authService: AuthService
   ) {}
 
@@ -24,6 +25,7 @@ export class SsoCallbackComponent implements OnInit {
     const code = this.route.snapshot.queryParamMap.get('code');
 
     if (!code) {
+      this.isLoading = false;
       this.errorMessage = 'No se recibió el código de autorización.';
       return;
     }
@@ -31,12 +33,18 @@ export class SsoCallbackComponent implements OnInit {
     this.authService.handleSsoCallback(code).subscribe({
       next: (response) => {
         this.authService.saveToken(response.token);
+        this.successMessage = 'Autenticación SSO exitosa.';
+        this.errorMessage = '';
+        this.isLoading = false;
+
         console.log('SSO success:', response);
-        this.router.navigate(['/']);
       },
       error: (error) => {
         const backendError = error.error as ErrorResponse | undefined;
         this.errorMessage = backendError?.message || 'Error procesando autenticación SSO.';
+        this.successMessage = '';
+        this.isLoading = false;
+
         console.error('SSO callback error:', error);
       }
     });

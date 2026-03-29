@@ -1,0 +1,76 @@
+<div class="login-form">
+  <img
+    class="login-form__logo"
+    src="assets/images/logos/Logo-RD.svg"
+    alt="Realdooh">
+
+  <p class="login-form__title">Inicia sesión en tu cuenta</p>
+
+  <form
+    class="login-form__form"
+    [formGroup]="formGroup"
+    (ngSubmit)="onSubmit()">
+
+    <mat-form-field appearance="outline" class="login-form__field">
+      <input
+        matInput
+        placeholder="Correo electrónico"
+        type="email"
+        formControlName="email">
+    </mat-form-field>
+
+    <p
+      *ngIf="formGroup.get('email')?.touched && formGroup.get('email')?.invalid"
+      class="login-form__field-error">
+      Ingresa un correo electrónico válido.
+    </p>
+
+    <mat-form-field appearance="outline" class="login-form__field">
+      <input
+        matInput
+        placeholder="Contraseña"
+        [type]="hidePassword ? 'password' : 'text'"
+        formControlName="password">
+    </mat-form-field>
+
+    <p
+      *ngIf="formGroup.get('password')?.touched && formGroup.get('password')?.invalid"
+      class="login-form__field-error">
+      La contraseña es obligatoria.
+    </p>
+
+    <button
+      mat-raised-button
+      class="login-form__button login-form__button--primary"
+      type="submit"
+      [disabled]="isLoading">
+      {{ isLoading ? 'CARGANDO...' : 'ENTRAR' }}
+    </button>
+
+    <app-feedback-message
+      *ngIf="successMessage"
+      [message]="successMessage"
+      type="success">
+    </app-feedback-message>
+
+    <app-feedback-message
+      *ngIf="errorMessage"
+      [message]="errorMessage"
+      type="error">
+    </app-feedback-message>
+
+    <p class="login-form__divider">Otras formas de acceso:</p>
+
+    <button
+      mat-stroked-button
+      class="login-form__button login-form__button--sso"
+      type="button"
+      (click)="onSsoClick()">
+      ENTRAR CON SSO
+    </button>
+
+    <p class="login-form__register">
+      ¿No tienes cuenta? <span class="login-form__register-link">Regístrate</span>
+    </p>
+  </form>
+</div>

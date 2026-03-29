@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.Map;
 
 @RestController
@@ -33,7 +34,7 @@ public class AuthController {
     }
 
     @GetMapping("/sso")
-    public ResponseEntity<Map<String,String>> redirectToSso() {
+    public ResponseEntity<Map<String, String>> redirectToSso() {
 
         log.info("Starting SSO flow");
 
@@ -44,9 +45,7 @@ public class AuthController {
 
         log.debug("Generated SSO URL: {}", ssoUrl);
 
-        return ResponseEntity.status(302)
-                .header(HttpHeaders.LOCATION, ssoUrl)
-                .build();
+        return ResponseEntity.ok(Collections.singletonMap("url", ssoUrl));
     }
 
     @GetMapping("/sso/callback")

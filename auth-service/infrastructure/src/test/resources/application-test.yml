@@ -31,3 +31,10 @@ logging:
   level:
     org.springframework: WARN
     org.hibernate.SQL: OFF
+
+sso:
+  authorize-url: https://fake-sso-provider.com/oauth/authorize
+  client-id: auth-service-client
+  redirect-uri: http://localhost:4200/sso/callback
+  valid-code: valid-code
+  mock-user: sso-user@mail.com

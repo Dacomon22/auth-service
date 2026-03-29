@@ -1,66 +1,11 @@
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-container">
-
-  <div class="login-left">
-    <img src="assets/images/login.svg" alt="illustration">
-  </div>
-
-  <div class="login-right">
-    <div class="login-box">
-      <img src="assets/images/logos/Logo-RD.svg" alt="logo" class="logo">
-
-      <p class="title">Inicia sesión en tu cuenta</p>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <input
-          matInput
-          placeholder="Correo electrónico"
-          type="email"
-          formControlName="email">
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <input
-          matInput
-          placeholder="Contraseña"
-          [type]="hide ? 'password' : 'text'"
-          formControlName="password">
-      </mat-form-field>
-
-      <button
-        mat-raised-button
-        class="login-btn"
-        type="submit"
-        [disabled]="isLoading">
-        {{ isLoading ? 'CARGANDO...' : 'ENTRAR' }}
-      </button>
-
-      <p *ngIf="errorMessage" class="error-message">
-        {{ errorMessage }}
-      </p>
-
-      <p class="divider">Otras formas de acceso:</p>
-
-      <button
-        mat-stroked-button
-        class="sso-btn"
-        type="button"
-        (click)="loginWithSso()">
-        ENTRAR CON SSO
-      </button>
-
-      <p class="register">¿No tienes cuenta? <span>Regístrate</span></p>
-    </div>
-
-    <div class="login-footer">
-      <div class="language">
-        <span>🌐</span>
-        <span>IDIOMA: ES</span>
-      </div>
-
-      <div class="footer-brand">
-        <img src="assets/images/logos/Econocom.svg" alt="econocom">
-      </div>
-    </div>
-  </div>
-
-</form> 
+<app-auth-layout>
+  <app-login-form
+    [formGroup]="loginForm"
+    [isLoading]="isLoading"
+    [errorMessage]="errorMessage"
+    [successMessage]="successMessage"
+    [hidePassword]="hide"
+    (submitForm)="onSubmit()"
+    (ssoClick)="loginWithSso()">
+  </app-login-form>
+</app-auth-layout>

@@ -1,27 +1,113 @@
-# Frontend
+# Auth Frontend - Angular
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.16.
+## Overview
 
-## Development server
+This project is a frontend authentication application built with Angular.
+It supports login with email and password, as well as a simulated SSO (Single Sign-On) flow.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+The application communicates with a backend service and properly handles success and error responses.
 
-## Code scaffolding
+---
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Features
 
-## Build
+* Login with email and password
+* Form validation
+* Backend error handling
+* SSO flow simulation
+* JWT token handling
+* Loading state management
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+---
 
-## Running unit tests
+## Architecture
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+The project follows a feature-based structure:
 
-## Running end-to-end tests
+* `core/`: services and models
+* `features/`: business logic (authentication)
+* `shared/ui/`: reusable UI components
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+UI components are structured using Atomic Design:
 
-## Further help
+* Atoms: small reusable components (e.g. feedback messages)
+* Molecules: composed components (e.g. login form)
+* Organisms: layout components (e.g. auth layout)
+* Pages: feature-level components (e.g. login page)
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+---
+
+## Styling
+
+The project uses SCSS with BEM (Block Element Modifier) naming convention.
+
+Examples:
+
+* `login-form__button`
+* `login-form__button--primary`
+* `auth-layout__panel`
+
+This improves readability and scalability of styles.
+
+---
+
+## SSO Flow
+
+1. User clicks "Login with SSO"
+2. Frontend requests authorization URL from backend
+3. User is redirected (simulated)
+4. Backend validates the code:
+
+   * valid-code → success
+   * invalid-code → error
+5. Frontend displays the result
+
+---
+
+## Tech Stack
+
+* Angular (Standalone Components)
+* TypeScript
+* RxJS
+* Angular Material
+* SCSS (BEM)
+
+---
+
+## Testing
+
+Unit tests are implemented using Jest.
+
+To run tests:
+
+npm run test
+
+---
+
+## Run the project
+
+Install dependencies:
+
+npm install
+
+Run the application:
+
+ng serve
+
+Open in browser:
+
+http://localhost:4200
+
+---
+
+## Notes
+
+* UI is separated from business logic
+* Components are reusable and scalable
+* Backend error messages are displayed to the user
+
+---
+
+## Author
+
+David Castiblanco

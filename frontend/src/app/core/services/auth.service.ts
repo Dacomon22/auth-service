@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoginRequest } from '../models/login-request.model';
 import { AuthResponse } from '../models/auth-response.model';
+import { SsoRedirectResponse } from '../models/sso-redirect-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,11 +23,15 @@ export class AuthService {
     window.location.href = `${this.authUrl}/sso`;
   }
 
-  handleSsoCallback(code: string): Observable<AuthResponse> {
-    return this.http.get<AuthResponse>(`${this.authUrl}/sso/callback`, {
-      params: { code }
-    });
-  }
+  startSso(): Observable<SsoRedirectResponse> {
+  return this.http.get<SsoRedirectResponse>(`${this.authUrl}/sso`);
+}
+
+handleSsoCallback(code: string): Observable<AuthResponse> {
+  return this.http.get<AuthResponse>(`${this.authUrl}/sso/callback`, {
+    params: { code }
+  });
+}
 
   saveToken(token: string): void {
     localStorage.setItem('token', token);
@@ -39,4 +44,6 @@ export class AuthService {
   clearSession(): void {
     localStorage.removeItem('token');
   }
+
+  
 }

@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -68,12 +69,13 @@ public class AuthControllerIT {
     }
 
     @Test
-    void shouldRedirectToSsoProviderInIntegrationTest() throws Exception {
+    void shouldReturnSsoUrl() throws Exception {
         mockMvc.perform(get("/api/auth/sso"))
-                .andExpect(status().isFound())
-                .andExpect(header().string("Location", containsString("https://fake-sso-provider.com/oauth/authorize")))
-                .andExpect(header().string("Location", containsString("client_id=auth-service-client")))
-                .andExpect(header().string("Location", containsString("redirect_uri=http://localhost:4200/sso/callback")));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.url", containsString("https://fake-sso-provider.com/oauth/authorize")))
+                .andExpect(jsonPath("$.url", containsString("client_id=auth-service-client")))
+                .andExpect(jsonPath("$.url", containsString("redirect_uri=http://localhost:4200/sso/callback")))
+                .andExpect(jsonPath("$.url", containsString("response_type=code")));
     }
 
     @Test
